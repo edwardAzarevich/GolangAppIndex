@@ -8,5 +8,5 @@ func main() {
 		usdToRub = 90.0
 		eurToRub = usdToRub / usdToEur
 	)
-	fmt.Print(usdToEur, usdToEur, eurToRub)
+	fmt.Print(eurToRub)
 }

@@ -5,13 +5,18 @@ import (
 	"math"
 )
 
-func outputResult(imt float64) string {
-	result := fmt.Sprintf("Your index is: %.0f", imt)
+func outputResult(imt float64) {
+	result := fmt.Sprintf("Your index is: %.0f%%", imt)
 	fmt.Println(result)
 }
 
-func main() {
+func calculateIMT(userHeight, userKg float64) float64 {
 	const IMTPower = 2
+	IMT := userKg / math.Pow(userHeight/100, IMTPower)
+	return IMT
+}
+
+func main() {
 	var userHeight float64
 	var userKg float64
 	fmt.Println("calc index")
@@ -19,6 +24,6 @@ func main() {
 	fmt.Scan(&userHeight)
 	fmt.Print("Enter your Kg ")
 	fmt.Scan(&userKg)
-	IMT := userKg / math.Pow(userHeight/100, IMTPower)
+	IMT := calculateIMT(userHeight, userKg)
 	outputResult(IMT)
 }

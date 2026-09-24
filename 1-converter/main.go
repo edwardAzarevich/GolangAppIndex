@@ -8,8 +8,9 @@ func userInput() float64 {
 	return userInput
 }
 
-func calculateConversion(userInput float64, current, target float64) float64 {
-	return userInput * (target / current)
+func calculateConversion(amount float64, fromCurrency string, toCurrency string) float64 {
+	fmt.Println(amount, fromCurrency, toCurrency)
+	return 0.0
 }
 
 func main() {
@@ -19,4 +20,6 @@ func main() {
 		eurToRub = usdToRub / usdToEur
 	)
 	fmt.Print(eurToRub)
+	var userInput float64 = userInput()
+	fmt.Print(calculateConversion(userInput, "USD", "EUR"))
 }

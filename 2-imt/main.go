@@ -11,8 +11,23 @@ func outputResult(imt float64) {
 }
 
 func calculateIMT(userHeight, userKg float64) (IMT float64) {
+	for i:=0; i<10; i++ {
+		
+	}
 	const IMTPower = 2
 	IMT = userKg / math.Pow(userHeight/100, IMTPower)
+	switch {
+	case IMT < 16:
+		fmt.Println("You are very underweight")
+	case IMT < 18.5:
+		fmt.Println("You are underweight")
+	case IMT < 25:
+		fmt.Println("You are normal")
+	case IMT < 30:
+		fmt.Println("You are overweight")
+	default:
+		fmt.Println("You have a degree of obesity")
+	}
 	return
 }
 

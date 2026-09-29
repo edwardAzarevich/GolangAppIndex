@@ -11,9 +11,6 @@ func outputResult(imt float64) {
 }
 
 func calculateIMT(userHeight, userKg float64) (IMT float64) {
-	for i:=0; i<10; i++ {
-		
-	}
 	const IMTPower = 2
 	IMT = userKg / math.Pow(userHeight/100, IMTPower)
 	switch {

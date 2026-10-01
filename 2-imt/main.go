@@ -10,6 +10,25 @@ func outputResult(imt float64) {
 	fmt.Println(result)
 }
 
+func repeat() bool {
+	var choice string
+	fmt.Println("Would you like to continue? yes/no")
+	fmt.Scan(&choice)
+	return choice == "yes"
+}
+
+func processIMTCalc() {
+	fmt.Println("Welcome to the IMT Calculator")
+	for {
+		userHeight, userKg := getUserInput()
+		IMT := calculateIMT(userHeight, userKg)
+		outputResult(IMT)
+		if !repeat() {
+			break
+		}
+	}
+}
+
 func calculateIMT(userHeight, userKg float64) (IMT float64) {
 	const IMTPower = 2
 	IMT = userKg / math.Pow(userHeight/100, IMTPower)
@@ -39,8 +58,8 @@ func getUserInput() (float64, float64) {
 }
 
 func main() {
-	fmt.Println("calc index")
-	userHeight, userKg := getUserInput()
-	IMT := calculateIMT(userHeight, userKg)
-	outputResult(IMT)
+	processIMTCalc()
+	// userHeight, userKg := getUserInput()
+	// IMT := calculateIMT(userHeight, userKg)
+	// outputResult(IMT)
 }

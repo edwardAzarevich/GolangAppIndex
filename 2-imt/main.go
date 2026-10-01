@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -12,16 +13,20 @@ func outputResult(imt float64) {
 
 func repeat() bool {
 	var choice string
-	fmt.Println("Would you like to continue? yes/no")
+	fmt.Println("Would you like to continue? y/n")
 	fmt.Scan(&choice)
-	return choice == "yes"
+	return choice == "y" || choice == "Y"
 }
 
 func processIMTCalc() {
 	fmt.Println("Welcome to the IMT Calculator")
 	for {
 		userHeight, userKg := getUserInput()
-		IMT := calculateIMT(userHeight, userKg)
+		IMT, err := calculateIMT(userHeight, userKg)
+		if err != nil {
+			fmt.Println("No valid height or weight")
+			continue
+		}
 		outputResult(IMT)
 		if !repeat() {
 			break
@@ -29,9 +34,13 @@ func processIMTCalc() {
 	}
 }
 
-func calculateIMT(userHeight, userKg float64) (IMT float64) {
+func calculateIMT(userHeight, userKg float64) (float64, error) {
+
+	if userKg <= 0 || userHeight <= 0 {
+		return 0, errors.New("NO_VALID_HEIGHT_OR_WEIGHT")
+	}
 	const IMTPower = 2
-	IMT = userKg / math.Pow(userHeight/100, IMTPower)
+	IMT := userKg / math.Pow(userHeight/100, IMTPower)
 	switch {
 	case IMT < 16:
 		fmt.Println("You are very underweight")
@@ -44,7 +53,7 @@ func calculateIMT(userHeight, userKg float64) (IMT float64) {
 	default:
 		fmt.Println("You have a degree of obesity")
 	}
-	return
+	return IMT, nil
 }
 
 func getUserInput() (float64, float64) {
@@ -59,7 +68,4 @@ func getUserInput() (float64, float64) {
 
 func main() {
 	processIMTCalc()
-	// userHeight, userKg := getUserInput()
-	// IMT := calculateIMT(userHeight, userKg)
-	// outputResult(IMT)
 }

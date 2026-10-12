@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func userInput() float64 {
 	var userInput float64
@@ -8,17 +11,29 @@ func userInput() float64 {
 	return userInput
 }
 
-func userCurrensyInput() string {
-	fmt.Println("Please choose you currency: usd, euro, rub")
-	var currency string
-	fmt.Scan(&currency)
-	return currency
+func userCurrencyInput() string {
+	validCurrencies := map[string]bool{
+		"usd":  true,
+		"euro": true,
+		"rub":  true,
+	}
+	for {
+		fmt.Println("Please choose you currency: usd, euro, rub")
+		var currency string
+		fmt.Scan(&currency)
+
+		currency = strings.ToLower(strings.TrimSpace(currency))
+		if validCurrencies[currency] {
+			return currency
+		}
+		fmt.Println("Invalid currency. Please enter: usd, euro, or rub")
+	}
 }
 
 func processConversion() {
 	fmt.Println("Welcome to priccess Converter!")
 	for {
-		userCurrency := userCurrensyInput()
+		userCurrency := userCurrencyInput()
 	}
 }
 

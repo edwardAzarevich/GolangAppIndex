@@ -8,6 +8,20 @@ func userInput() float64 {
 	return userInput
 }
 
+func userCurrensyInput() string {
+	fmt.Println("Please choose you currency: usd, euro, rub")
+	var currency string
+	fmt.Scan(&currency)
+	return currency
+}
+
+func processConversion() {
+	fmt.Println("Welcome to priccess Converter!")
+	for {
+		userCurrency := userCurrensyInput()
+	}
+}
+
 func calculateConversion(amount float64, fromCurrency string, toCurrency string) float64 {
 	fmt.Println(amount, fromCurrency, toCurrency)
 	return 0.0

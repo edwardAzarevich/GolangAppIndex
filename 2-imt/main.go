@@ -19,13 +19,19 @@ func repeat() bool {
 }
 
 func processIMTCalc() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("Recovered:", err)
+		}
+	}()
 	fmt.Println("Welcome to the IMT Calculator")
 	for {
 		userHeight, userKg := getUserInput()
 		IMT, err := calculateIMT(userHeight, userKg)
 		if err != nil {
-			fmt.Println("No valid height or weight")
-			continue
+			// fmt.Println("No valid height or weight")
+			// continue
+			panic("No valid height or weight")
 		}
 		outputResult(IMT)
 		if !repeat() {

@@ -17,8 +17,8 @@ func userCurrencyInput() string {
 		"euro": true,
 		"rub":  true,
 	}
+	fmt.Println("Please choose you currency: usd, euro, rub")
 	for {
-		fmt.Println("Please choose you currency: usd, euro, rub")
 		var currency string
 		fmt.Scan(&currency)
 
@@ -32,9 +32,8 @@ func userCurrencyInput() string {
 
 func processConversion() {
 	fmt.Println("Welcome to priccess Converter!")
-	for {
-		userCurrency := userCurrencyInput()
-	}
+	userCurrency := userCurrencyInput()
+	fmt.Println(userCurrency)
 }
 
 func calculateConversion(amount float64, fromCurrency string, toCurrency string) float64 {
@@ -48,6 +47,7 @@ func main() {
 		usdToRub = 90.0
 		eurToRub = usdToRub / usdToEur
 	)
+	processConversion()
 	fmt.Print(eurToRub)
 	var userInput float64 = userInput()
 	fmt.Print(calculateConversion(userInput, "USD", "EUR"))

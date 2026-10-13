@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -11,15 +14,31 @@ const (
 	eurToRub = usdToRub / usdToEur
 )
 
-func userInput() float64 {
+var inputReader = bufio.NewReader(os.Stdin)
+
+func amountInput() float64 {
 	fmt.Print("Enter amount: ")
+
 	for {
-		var amount float64
-		_, err := fmt.Scan(&amount)
-		if err == nil {
-			return amount
+		line, err := inputReader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Input error. Try again.")
+			continue
 		}
-		fmt.Println("Invalid number. Please enter a number, for example: 100 or 12.5")
+
+		line = strings.TrimSpace(line)
+		amount, err := strconv.ParseFloat(line, 64)
+		if err != nil {
+			fmt.Println("Invalid number. Please enter a number, for example: 100 or 12.5")
+			continue
+		}
+
+		if amount <= 0 {
+			fmt.Println("Invalid number. Please enter more than 0, for example: 10 or 20.5")
+			continue
+		}
+
+		return amount
 	}
 }
 
@@ -35,10 +54,13 @@ func userCurrencyInput(exclude string) string {
 		fmt.Println("Please choose target currency: usd, euro, rub")
 	}
 	for {
-		var currency string
-		fmt.Scan(&currency)
+		line, err := inputReader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Input error. Try again.")
+			continue
+		}
 
-		currency = strings.ToLower(strings.TrimSpace(currency))
+		currency := strings.ToLower(strings.TrimSpace(line))
 
 		if !validCurrencies[currency] {
 			fmt.Println("Invalid currency. Please enter: usd, euro, or rub")
@@ -55,42 +77,46 @@ func userCurrencyInput(exclude string) string {
 }
 
 func processConversion() {
-	fmt.Println("Welcome to priccess Converter!")
+	fmt.Println("Welcome to process Converter!")
 	fromCurrency := userCurrencyInput("")
-	userValue := userInput()
+	userValue := amountInput()
 	toCurrency := userCurrencyInput(fromCurrency)
-	result := (calculateConversion(userValue, fromCurrency, toCurrency))
+	result, err := calculateConversion(userValue, fromCurrency, toCurrency)
+	if err != nil {
+		fmt.Println("Conversion error:", err)
+		return
+	}
 	fmt.Printf("%.2f %s = %.2f %s\n", userValue, fromCurrency, result, toCurrency)
 }
 
-func calculateConversion(amount float64, fromCurrency string, toCurrency string) float64 {
+func calculateConversion(amount float64, fromCurrency string, toCurrency string) (float64, error) {
 	fromCurrency = strings.ToLower(strings.TrimSpace(fromCurrency))
 	toCurrency = strings.ToLower(strings.TrimSpace(toCurrency))
 	switch fromCurrency {
 	case "usd":
 		switch toCurrency {
 		case "euro":
-			return amount * usdToEur
+			return amount * usdToEur, nil
 		case "rub":
-			return amount * usdToRub
+			return amount * usdToRub, nil
 		}
 	case "euro":
 		switch toCurrency {
 		case "usd":
-			return amount / usdToEur
+			return amount / usdToEur, nil
 		case "rub":
-			return amount * eurToRub
+			return amount * eurToRub, nil
 		}
 	case "rub":
 		switch toCurrency {
 		case "usd":
-			return amount / usdToRub
+			return amount / usdToRub, nil
 		case "euro":
-			return amount / eurToRub
+			return amount / eurToRub, nil
 		}
 	}
 
-	return 0.0
+	return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
 }
 
 func main() {

@@ -10,6 +10,14 @@ import (
 
 var inputReader = bufio.NewReader(os.Stdin)
 
+func sumTransactions(transactions []float64) float64 {
+	var sum float64 = 0
+	for _, value := range transactions {
+		sum += value
+	}
+	return sum
+}
+
 func enterTransaction() []float64 {
 	fmt.Println("Please Enter your transactions")
 	for {
@@ -45,5 +53,8 @@ func enterTransaction() []float64 {
 
 func main() {
 	inputNumbers := enterTransaction()
-	fmt.Printf("Your transaction: %v", inputNumbers)
+	fmt.Printf("Your transaction: %v\n", inputNumbers)
+	sum := sumTransactions(inputNumbers)
+	fmt.Printf("Total Sum: %.2f\n", sum)
+	fmt.Println("---------------------------")
 }

@@ -3,14 +3,9 @@ package main
 import "fmt"
 
 func main() {
-	numbers := [5]int{7, 14, 21, 28, 35}
-	s := make([]int, 0, 3)
-
-	_ = numbers
-	_ = s
-
-	for _, k := range numbers {
-		s = append(s, k)
-		fmt.Printf("len=%d cap=%d\n", len(s), cap(s))
-	}
+	arr := [5]int{100, 200, 300, 400, 500}
+	firstEl := 50
+	slice := arr[1:4]
+	slice[0] = firstEl
+	fmt.Println(arr, len(slice), cap(slice))
 }

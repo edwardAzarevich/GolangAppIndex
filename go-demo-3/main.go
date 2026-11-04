@@ -1,0 +1,5 @@
+package mainfunc
+
+func main() {
+
+}

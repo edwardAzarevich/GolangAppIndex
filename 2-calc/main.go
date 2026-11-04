@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -68,9 +69,57 @@ func userOperationInput() string {
 	}
 }
 
+func calcOperation(operation string, arr []float64) float64 {
+	switch operation {
+	case "sum":
+		return sum(arr)
+	case "avg":
+		return avg(arr)
+	case "med":
+		return med(arr)
+	default:
+		return 0.0
+	}
+}
+
+func sum(arr []float64) float64 {
+	result := 0.0
+	for _, v := range arr {
+		result += v
+	}
+	return result
+}
+
+func avg(arr []float64) float64 {
+	result := 0.0
+	for _, v := range arr {
+		result += v
+	}
+	result = result / float64(len(arr))
+	return result
+}
+
+func med(arr []float64) float64 {
+	n := len(arr)
+	if n == 0 {
+		return 0
+	}
+
+	cpy := slices.Clone(arr)
+
+	slices.Sort(cpy)
+
+	if n%2 == 1 {
+		return cpy[n/2]
+	} else {
+		return (cpy[n/2-1] + cpy[n/2]) / 2
+	}
+}
+
 func main() {
 	fmt.Println("Welcome to calculation!")
 	operation := userOperationInput()
 	arr := enterTransaction()
-	fmt.Println(operation, arr)
+	result := calcOperation(operation, arr)
+	fmt.Printf("Your result operation %s: %0.2f", operation, result)
 }

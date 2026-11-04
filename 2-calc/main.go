@@ -24,10 +24,16 @@ func enterTransaction() []float64 {
 			fmt.Println("Exit the program. Good luck!")
 			break
 		}
-		stringNumbers := strings.Fields(userInput)
+		stringNumbers := strings.Split(userInput, ",")
 		var numbers []float64
 		isValid := true
 		for _, str := range stringNumbers {
+			str = strings.TrimSpace(str)
+			if str == "" {
+				fmt.Println("Error: empty value between commas. Please try again.")
+				isValid = false
+				break
+			}
 			num, err := strconv.ParseFloat(str, 64)
 			if err != nil {
 				fmt.Printf("Error: %q — not a number. Please try again.\n", str)

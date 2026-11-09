@@ -40,6 +40,10 @@ func deleteBookmark() {
 }
 
 func getMap(actions map[int]string) {
+	if len(actions) == 0 {
+		fmt.Println("Bookmark is empty!")
+		return
+	}
 	for key, value := range actions {
 		fmt.Printf("%d - %s,\n", key, value)
 	}

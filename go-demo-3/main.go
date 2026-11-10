@@ -1,91 +1,61 @@
 package main
 
-import (
-	"bufio"
-	"fmt"
-	"os"
-)
+import "fmt"
 
-var inputReader = bufio.NewReader(os.Stdin)
-
-var UserBookMarks = map[int]string{}
-
-func getPageAndInfo() (int, string) {
-	var userKey int
-	var userValue string
-	fmt.Println("Please input page:")
-	fmt.Scan(&userKey)
-	fmt.Println("Please input info:")
-	fmt.Scan(&userValue)
-	return userKey, userValue
-}
-
-func getDeletePage() int {
-	var userKey int
-	fmt.Println("Please input page:")
-	fmt.Scan(&userKey)
-	return userKey
-}
-
-func addBookmark() {
-	userKey, userValue := getPageAndInfo()
-	UserBookMarks[userKey] = userValue
-	fmt.Println("Added success!")
-}
-
-func deleteBookmark() {
-	userKey := getDeletePage()
-	delete(UserBookMarks, userKey)
-	fmt.Println("Added success!")
-}
-
-func getMap(actions map[int]string) {
-	if len(actions) == 0 {
-		fmt.Println("Bookmark is empty!")
-		return
-	}
-	for key, value := range actions {
-		fmt.Printf("%d - %s,\n", key, value)
-	}
-}
-
-func menuAction(actions map[int]string, userAction int) bool {
-	switch actions[userAction] {
-	case "view bookmarks":
-		fmt.Println("view bookmarks")
-		getMap(UserBookMarks)
-	case "add bookmark":
-		fmt.Println("add")
-		addBookmark()
-	case "delete bookmark":
-		fmt.Println("delete")
-		deleteBookmark()
-	case "exit":
-		fmt.Println("Goodbye!!!")
-		return false
-	default:
-		fmt.Println("invalid value, please try again!")
-	}
-	return true
-}
+type bookmarkMap = map[string]string
 
 func main() {
-	var userInput int
-	actions := map[int]string{
-		1: "view bookmarks",
-		2: "add bookmark",
-		3: "delete bookmark",
-		4: "exit",
-	}
-	fmt.Println("Welcome to application for bookmarks!")
-	fmt.Println("Please choose your action:")
-	getMap(actions)
+	bookmarks := bookmarkMap{}
+	fmt.Println("Bookmark application")
+Menu:
 	for {
-		fmt.Scan(&userInput)
-		shouldContinue := menuAction(actions, userInput)
-		if !shouldContinue {
-			break
+		variant := getMenu()
+		switch variant {
+		case 1:
+			printBookmarks(bookmarks)
+		case 2:
+			addBookmark(bookmarks)
+		case 3:
+			deleteBookmark(bookmarks)
+		case 4:
+			break Menu
 		}
-		getMap(actions)
 	}
+}
+
+func getMenu() int {
+	var variant int
+	fmt.Println("Choose an option")
+	fmt.Println("1 - View bookmarks")
+	fmt.Println("2 - Add bookmark")
+	fmt.Println("3 - Delete bookmark")
+	fmt.Println("4 - Exit")
+	fmt.Scan(&variant)
+	return variant
+}
+
+func printBookmarks(bookmarks bookmarkMap) {
+	if len(bookmarks) == 0 {
+		fmt.Println("No bookmarks yet")
+	}
+	for key, value := range bookmarks {
+		fmt.Println(key, ": ", value)
+	}
+}
+
+func addBookmark(bookmarks bookmarkMap) {
+	var newBookmarkKey string
+	var newBookmarkValue string
+	fmt.Print("Enter name: ")
+	fmt.Scan(&newBookmarkKey)
+	fmt.Print("Enter URL: ")
+	fmt.Scan(&newBookmarkValue)
+	bookmarks[newBookmarkKey] = newBookmarkValue
+}
+
+func deleteBookmark(bookmarks bookmarkMap) {
+	var bookmarkKeyToDelete string
+	fmt.Print("Enter name: ")
+	fmt.Scan(&bookmarkKeyToDelete)
+	delete(bookmarks, bookmarkKeyToDelete)
 }

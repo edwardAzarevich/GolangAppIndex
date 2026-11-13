@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const (
-	usdToEur = 0.92
-	usdToRub = 90.0
-	eurToRub = usdToRub / usdToEur
-)
+var exchangeRate = map[string]float64{
+	"usdToEur": 0.92,
+	"usdToRub": 90.0,
+	"eurToRub": 90.0 / 0.92,
+}
 
 var inputReader = bufio.NewReader(os.Stdin)
 
@@ -96,23 +96,23 @@ func calculateConversion(amount float64, fromCurrency string, toCurrency string)
 	case "usd":
 		switch toCurrency {
 		case "euro":
-			return amount * usdToEur, nil
+			return amount * exchangeRate["usdToEur"], nil
 		case "rub":
-			return amount * usdToRub, nil
+			return amount * exchangeRate["usdToRub"], nil
 		}
 	case "euro":
 		switch toCurrency {
 		case "usd":
-			return amount / usdToEur, nil
+			return amount / exchangeRate["usdToEur"], nil
 		case "rub":
-			return amount * eurToRub, nil
+			return amount * exchangeRate["eurToRub"], nil
 		}
 	case "rub":
 		switch toCurrency {
 		case "usd":
-			return amount / usdToRub, nil
+			return amount / exchangeRate["usdToRub"], nil
 		case "euro":
-			return amount / eurToRub, nil
+			return amount / exchangeRate["eurToRub"], nil
 		}
 	}
 

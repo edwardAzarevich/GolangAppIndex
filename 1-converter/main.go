@@ -43,11 +43,6 @@ func amountInput() float64 {
 }
 
 func userCurrencyInput(exclude string) string {
-	validCurrencies := map[string]bool{
-		"usd":  true,
-		"euro": true,
-		"rub":  true,
-	}
 	if exclude == "" {
 		fmt.Println("Please choose your currency: usd, euro, rub")
 	} else {
@@ -62,7 +57,7 @@ func userCurrencyInput(exclude string) string {
 
 		currency := strings.ToLower(strings.TrimSpace(line))
 
-		if !validCurrencies[currency] {
+		if _, ok := exchangeRate[currency]; !ok {
 			fmt.Println("Invalid currency. Please enter: usd, euro, or rub")
 			continue
 		}

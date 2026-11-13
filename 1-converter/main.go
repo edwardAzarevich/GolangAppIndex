@@ -9,9 +9,9 @@ import (
 )
 
 var exchangeRate = map[string]float64{
-	"usdToEur": 0.92,
-	"usdToRub": 90.0,
-	"eurToRub": 90.0 / 0.92,
+	"usd":  1,
+	"euro": 0.92,
+	"rub":  90.0,
 }
 
 var inputReader = bufio.NewReader(os.Stdin)
@@ -92,31 +92,18 @@ func processConversion() {
 func calculateConversion(amount float64, fromCurrency string, toCurrency string) (float64, error) {
 	fromCurrency = strings.ToLower(strings.TrimSpace(fromCurrency))
 	toCurrency = strings.ToLower(strings.TrimSpace(toCurrency))
-	switch fromCurrency {
-	case "usd":
-		switch toCurrency {
-		case "euro":
-			return amount * exchangeRate["usdToEur"], nil
-		case "rub":
-			return amount * exchangeRate["usdToRub"], nil
-		}
-	case "euro":
-		switch toCurrency {
-		case "usd":
-			return amount / exchangeRate["usdToEur"], nil
-		case "rub":
-			return amount * exchangeRate["eurToRub"], nil
-		}
-	case "rub":
-		switch toCurrency {
-		case "usd":
-			return amount / exchangeRate["usdToRub"], nil
-		case "euro":
-			return amount / exchangeRate["eurToRub"], nil
-		}
+
+	fromRate, ok := exchangeRate[fromCurrency]
+	if !ok {
+		return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
 	}
 
-	return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
+	toRate, ok := exchangeRate[toCurrency]
+	if !ok {
+		return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
+	}
+
+	return amount / fromRate * toRate, nil
 }
 
 func main() {

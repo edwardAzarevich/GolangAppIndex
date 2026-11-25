@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const (
-	usdToEur = 0.92
-	usdToRub = 90.0
-	eurToRub = usdToRub / usdToEur
-)
+var exchangeRate = map[string]float64{
+	"usd":  1,
+	"euro": 0.92,
+	"rub":  90.0,
+}
 
 var inputReader = bufio.NewReader(os.Stdin)
 
@@ -42,12 +42,7 @@ func amountInput() float64 {
 	}
 }
 
-func userCurrencyInput(exclude string) string {
-	validCurrencies := map[string]bool{
-		"usd":  true,
-		"euro": true,
-		"rub":  true,
-	}
+func userCurrencyInput(rates *map[string]float64, exclude string) string {
 	if exclude == "" {
 		fmt.Println("Please choose your currency: usd, euro, rub")
 	} else {
@@ -62,7 +57,7 @@ func userCurrencyInput(exclude string) string {
 
 		currency := strings.ToLower(strings.TrimSpace(line))
 
-		if !validCurrencies[currency] {
+		if _, ok := (*rates)[currency]; !ok {
 			fmt.Println("Invalid currency. Please enter: usd, euro, or rub")
 			continue
 		}
@@ -76,12 +71,12 @@ func userCurrencyInput(exclude string) string {
 	}
 }
 
-func processConversion() {
+func processConversion(rates *map[string]float64) {
 	fmt.Println("Welcome to process Converter!")
-	fromCurrency := userCurrencyInput("")
+	fromCurrency := userCurrencyInput(rates, "")
 	userValue := amountInput()
-	toCurrency := userCurrencyInput(fromCurrency)
-	result, err := calculateConversion(userValue, fromCurrency, toCurrency)
+	toCurrency := userCurrencyInput(rates, fromCurrency)
+	result, err := calculateConversion(userValue, fromCurrency, toCurrency, rates)
 	if err != nil {
 		fmt.Println("Conversion error:", err)
 		return
@@ -89,36 +84,23 @@ func processConversion() {
 	fmt.Printf("%.2f %s = %.2f %s\n", userValue, fromCurrency, result, toCurrency)
 }
 
-func calculateConversion(amount float64, fromCurrency string, toCurrency string) (float64, error) {
+func calculateConversion(amount float64, fromCurrency string, toCurrency string, rates *map[string]float64) (float64, error) {
 	fromCurrency = strings.ToLower(strings.TrimSpace(fromCurrency))
 	toCurrency = strings.ToLower(strings.TrimSpace(toCurrency))
-	switch fromCurrency {
-	case "usd":
-		switch toCurrency {
-		case "euro":
-			return amount * usdToEur, nil
-		case "rub":
-			return amount * usdToRub, nil
-		}
-	case "euro":
-		switch toCurrency {
-		case "usd":
-			return amount / usdToEur, nil
-		case "rub":
-			return amount * eurToRub, nil
-		}
-	case "rub":
-		switch toCurrency {
-		case "usd":
-			return amount / usdToRub, nil
-		case "euro":
-			return amount / eurToRub, nil
-		}
+
+	fromRate, ok := (*rates)[fromCurrency]
+	if !ok {
+		return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
 	}
 
-	return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
+	toRate, ok := (*rates)[toCurrency]
+	if !ok {
+		return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
+	}
+
+	return amount / fromRate * toRate, nil
 }
 
 func main() {
-	processConversion()
+	processConversion(&exchangeRate)
 }

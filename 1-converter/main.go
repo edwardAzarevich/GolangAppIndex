@@ -42,7 +42,7 @@ func amountInput() float64 {
 	}
 }
 
-func userCurrencyInput(exclude string) string {
+func userCurrencyInput(rates *map[string]float64, exclude string) string {
 	if exclude == "" {
 		fmt.Println("Please choose your currency: usd, euro, rub")
 	} else {
@@ -57,7 +57,7 @@ func userCurrencyInput(exclude string) string {
 
 		currency := strings.ToLower(strings.TrimSpace(line))
 
-		if _, ok := exchangeRate[currency]; !ok {
+		if _, ok := (*rates)[currency]; !ok {
 			fmt.Println("Invalid currency. Please enter: usd, euro, or rub")
 			continue
 		}
@@ -71,12 +71,12 @@ func userCurrencyInput(exclude string) string {
 	}
 }
 
-func processConversion() {
+func processConversion(rates *map[string]float64) {
 	fmt.Println("Welcome to process Converter!")
-	fromCurrency := userCurrencyInput("")
+	fromCurrency := userCurrencyInput(rates, "")
 	userValue := amountInput()
-	toCurrency := userCurrencyInput(fromCurrency)
-	result, err := calculateConversion(userValue, fromCurrency, toCurrency)
+	toCurrency := userCurrencyInput(rates, fromCurrency)
+	result, err := calculateConversion(userValue, fromCurrency, toCurrency, rates)
 	if err != nil {
 		fmt.Println("Conversion error:", err)
 		return
@@ -84,16 +84,16 @@ func processConversion() {
 	fmt.Printf("%.2f %s = %.2f %s\n", userValue, fromCurrency, result, toCurrency)
 }
 
-func calculateConversion(amount float64, fromCurrency string, toCurrency string) (float64, error) {
+func calculateConversion(amount float64, fromCurrency string, toCurrency string, rates *map[string]float64) (float64, error) {
 	fromCurrency = strings.ToLower(strings.TrimSpace(fromCurrency))
 	toCurrency = strings.ToLower(strings.TrimSpace(toCurrency))
 
-	fromRate, ok := exchangeRate[fromCurrency]
+	fromRate, ok := (*rates)[fromCurrency]
 	if !ok {
 		return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
 	}
 
-	toRate, ok := exchangeRate[toCurrency]
+	toRate, ok := (*rates)[toCurrency]
 	if !ok {
 		return 0, fmt.Errorf("unsupported conversion: %s -> %s", fromCurrency, toCurrency)
 	}
@@ -102,5 +102,5 @@ func calculateConversion(amount float64, fromCurrency string, toCurrency string)
 }
 
 func main() {
-	processConversion()
+	processConversion(&exchangeRate)
 }
